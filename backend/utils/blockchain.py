@@ -94,6 +94,7 @@ def get_erc20_balance(address):
     except Exception as e:
         return str(e)
 
+
 # Utility: Load ERC-20 ABI
 def erc20_abi():
     return json.loads('[{"constant":false,"inputs":[{"name":"recipient","type":"address"},{"name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}]')
