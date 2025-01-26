@@ -1,7 +1,4 @@
 "use client";
-import {
-  ClerkProvider,
-} from '@clerk/nextjs'
 import type { ThemeProviderProps } from "next-themes";
 
 import * as React from "react";
@@ -26,10 +23,8 @@ export function Providers({ children, themeProps }: ProvidersProps) {
   const router = useRouter();
 
   return (
-    <ClerkProvider>
     <HeroUIProvider navigate={router.push}>
       <NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
     </HeroUIProvider>
-    </ClerkProvider>
   );
 }
