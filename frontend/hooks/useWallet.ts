@@ -21,13 +21,23 @@ export function useWallet() {
       const provider = new ethers.BrowserProvider(window.ethereum);
       setProvider(provider);
 
+      // Handle account changes
       window.ethereum.on('accountsChanged', (accounts: string[]) => {
         setAddress(accounts[0] || null);
       });
 
+      // Handle chain changes
       window.ethereum.on('chainChanged', (chainId: string) => {
         setChainId(parseInt(chainId));
+        // Reinitialize provider on chain change
+        setProvider(new ethers.BrowserProvider(window.ethereum));
       });
+
+      // Clean up listeners
+      return () => {
+        window.ethereum.removeAllListeners('accountsChanged');
+        window.ethereum.removeAllListeners('chainChanged');
+      };
     }
   }, []);
 
