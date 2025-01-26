@@ -1,7 +1,10 @@
 import os
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from handlers.balance import relay_transaction, get_transaction_history, get_balance
+from handlers.balance import get_balance
+from handlers.history import get_transaction_history
+from handlers.relay import relay_transaction
+
 
 # Initialize the FastAPI app
 app = FastAPI()
