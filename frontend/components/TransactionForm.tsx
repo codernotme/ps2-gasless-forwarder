@@ -89,9 +89,9 @@ export default function TransactionForm() {
         values.tokenType === "ERC20" ? values.tokenAddress : undefined
       );
 
-      const txHash = typeof response === 'string' 
+      const txHash = response && typeof response === 'string' 
         ? response 
-        : response?.hash || response?.transactionHash;
+        : response && 'hash' in response ? response.hash : undefined;
 
       if (txHash) {
         setQrCodeData(txHash);
