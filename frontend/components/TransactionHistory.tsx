@@ -4,6 +4,8 @@ import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell } from 
 import { Badge } from "@heroui/badge";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
+import { api } from '@/services/api';
+import { useWallet } from '@/hooks/useWallet';
 
 /**
  * Transaction type definition
@@ -49,21 +51,30 @@ const mockTransactions: Transaction[] = [
  * Displays a table of past transactions with their status
  */
 export default function TransactionHistory() {
-  // State management for transactions and loading state
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { address } = useWallet();
 
-  // Simulate fetching transactions
   useEffect(() => {
     const fetchTransactions = async () => {
-      // Simulate a network request with a timeout
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setTransactions(mockTransactions);
-      setIsLoading(false);
+      if (!address) {
+        setTransactions([]);
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const response = await api.getTransactionHistory(address);
+        setTransactions(response.transactions);
+      } catch (error) {
+        console.error('Failed to fetch transactions:', error);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     fetchTransactions();
-  }, []);
+  }, [address]);
 
   // Loading state display
   if (isLoading) {

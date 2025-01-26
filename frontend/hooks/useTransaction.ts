@@ -42,6 +42,7 @@ export function useTransaction() {
 
         return await api.relayTransaction({
           ...transaction,
+          value: transaction.value.toString(),
           signature
         });
       } else {
