@@ -1,4 +1,4 @@
-from services import fetch_balance
+from ..services.balance_services import fetch_balance
 
 def get_balance(query_params):
     """

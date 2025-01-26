@@ -14,15 +14,16 @@ def fetch_balance(address):
 
     # Connect to the Ethereum node
     web3 = Web3(Web3.HTTPProvider(infura_rpc_url))
-    if not web3.isConnected():
+    if not web3.is_connected():
         raise ConnectionError("Failed to connect to Ethereum node")
 
     # Validate the Ethereum address
-    if not web3.isAddress(address):
+
+    if not web3.is_address(address):
         raise ValueError(f"Invalid Ethereum address: {address}")
 
     # Convert address to checksum format
-    checksum_address = web3.toChecksumAddress(address)
+    checksum_address = web3.to_checksum_address(address)
 
     # Fetch the balance in Wei (smallest unit of Ether)
     try:
@@ -31,7 +32,7 @@ def fetch_balance(address):
         raise RuntimeError(f"Failed to fetch balance: {str(e)}")
 
     # Convert Wei to Ether
-    balance_ether = Web3.fromWei(balance_wei, 'ether')
+    balance_ether = Web3.from_wei(balance_wei, 'ether')
 
     # Format the Ether balance to 6 decimal places as a string
     return f"{balance_ether:.6f}"
