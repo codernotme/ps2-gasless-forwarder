@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  frontend:
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm run dev
+    environment:
+      - NODE_ENV=development
+
+  backend:
+    volumes:
+      - ./backend:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8080 --reload
+    environment:
+      - ENVIRONMENT=development
+
+  contracts:
+    volumes:
+      - ./contracts:/app
+      - /app/node_modules
+    command: npx hardhat node 
