@@ -11,6 +11,8 @@ services:
       - NEXT_PUBLIC_API_BASE_URL=http://backend:8080
     depends_on:
       - backend
+    networks:
+      - app-network
 
   backend:
     build:
@@ -22,6 +24,8 @@ services:
       - FORWARDER_ADDRESS=${FORWARDER_ADDRESS}
       - PRIVATE_KEY=${PRIVATE_KEY}
       - INFURA_RPC_URL=${INFURA_RPC_URL}
+    networks:
+      - app-network
 
   contracts:
     build:
@@ -29,4 +33,10 @@ services:
       dockerfile: Dockerfile
     environment:
       - PRIVATE_KEY=${PRIVATE_KEY}
-      - SEPOLIA_RPC_URL=${SEPOLIA_RPC_URL} 
+      - SEPOLIA_RPC_URL=${SEPOLIA_RPC_URL}
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

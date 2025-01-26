@@ -2,18 +2,14 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Install dependencies only when needed
+# Add development dependencies
 COPY package*.json ./
 RUN npm install
 
 # Copy the rest of the code
 COPY . .
 
-# Build for production
-RUN npm run build
+# Expose port
+EXPOSE 3000
 
-# Use development server by default
 CMD ["npm", "run", "dev"]
-
-# Production command (override in docker-compose)
-# CMD ["npm", "start"] 
