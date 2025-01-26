@@ -1,4 +1,4 @@
-from ..utils import blockchain, env_loader
+from ..utils import blockchain
 
 
 def get_transaction_history(query_params):
