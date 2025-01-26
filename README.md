@@ -1,4 +1,4 @@
-# PS2 Glass Forwarder Wallet
+# PS2: Glass Forwarder Wallet
 
 PS2 Glass Forwarder is an innovative, wallet-type project designed to streamline and enhance user experiences in handling glass-forwarding transactions. Built with cutting-edge technologies, it integrates robust frontend and backend systems with seamless smart contract support.
 
