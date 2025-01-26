@@ -15,6 +15,9 @@ import { Loader2, InfoIcon } from "lucide-react";
 import { Checkbox } from "@heroui/checkbox";
 import { Tooltip } from "@heroui/tooltip";
 import { Card } from "@heroui/card";
+import { api } from '@/services/api';
+import { useTransaction } from '@/hooks/useTransaction';
+import { config } from '@/config';
 
 /**
  * Form validation schema for transaction inputs
@@ -35,6 +38,8 @@ const formSchema = z.object({
   priority: z.enum(["low", "medium", "high"]).default("medium"),
 });
 
+type TransactionFormData = z.infer<typeof formSchema>;
+
 /**
  * Transaction Form Component
  * Handles token transfers with optional gasless transactions via paymaster
@@ -48,8 +53,10 @@ export default function TransactionForm() {
   const { address, provider } = useWallet();
   const { toast } = useToast();
 
+  const { sendTransaction, isLoading } = useTransaction();
+
   // Form initialization with zod resolver
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<TransactionFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       recipient: "",
@@ -65,7 +72,7 @@ export default function TransactionForm() {
    * Handle form submission
    * Validates wallet connection and submits transaction
    */
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: TransactionFormData) {
     if (!address || !provider) {
       toast({
         title: "Wallet Not Connected",
@@ -76,16 +83,23 @@ export default function TransactionForm() {
     }
 
     try {
-      setIsSubmitting(true);
-      // TODO: Implement actual transaction submission
-      console.log(values);
-      // Simulate transaction hash for QR code
-      const mockTxHash = "0x" + Array(64).fill("0").join("");
-      setQrCodeData(mockTxHash);
-      toast({
-        title: "Transaction Submitted",
-        description: "Your transaction has been submitted successfully.",
-      });
+      const response = await sendTransaction(
+        values.recipient,
+        values.amount,
+        values.tokenType === "ERC20" ? values.tokenAddress : undefined
+      );
+
+      const txHash = typeof response === 'string' 
+        ? response 
+        : response?.hash || response?.transactionHash;
+
+      if (txHash) {
+        setQrCodeData(txHash);
+        toast({
+          title: "Transaction Submitted",
+          description: "Your transaction has been submitted successfully.",
+        });
+      }
     } catch (error) {
       console.error("Transaction failed:", error);
       toast({
@@ -93,8 +107,6 @@ export default function TransactionForm() {
         description: "Failed to submit transaction. Please try again.",
         variant: "destructive",
       });
-    } finally {
-      setIsSubmitting(false);
     }
   }
 
@@ -198,8 +210,8 @@ export default function TransactionForm() {
           </div>
         </Card>
 
-        <Button type="submit" disabled={isSubmitting} fullWidth>
-          {isSubmitting ? (
+        <Button type="submit" disabled={isLoading} fullWidth>
+          {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Submitting...

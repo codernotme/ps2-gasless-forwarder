@@ -1,3 +1,4 @@
+"use client"
 import { createContext, useContext, useState, ReactNode } from 'react';
 
 interface TransactionContextType {
@@ -34,4 +35,4 @@ export function useTransactionContext() {
   const context = useContext(TransactionContext);
   if (!context) throw new Error('useTransactionContext must be used within TransactionProvider');
   return context;
-} 
+}
