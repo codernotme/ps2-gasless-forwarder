@@ -96,3 +96,22 @@ This project is licensed under the MIT License. See the LICENSE file for more de
 ---
 
 Enjoy using PS2 Glass Forwarder Wallet! If you encounter any issues, feel free to open an issue or contribute to the project.
+
+env
+```bash
+Network Configuration
+INFURA_API_KEY= 
+PRIVATE_KEY=0592726a8f441cc3f187a3bf3c107f1beac8da5285e0202f0f7be4334bdc3055
+
+Network RPCs
+MAINNET_RPC=https://mainnet.infura.io/v3/your-infura-key
+GOERLI_RPC=https://goerli.infura.io/v3/your-infura-key
+POLYGON_RPC=https://polygon-mainnet.infura.io/v3/your-infura-key
+
+Verification
+ETHERSCAN_API_KEY=AFQJGIPIQFDAPNN5U2J2GUBAD6HD1DM4MF
+POLYGONSCAN_API_KEY=R5ZPD8D94WX59B7DR1NGNVTYSJMBJPKTBH
+
+ERC20_CONTRACT_ADDRESS=YCT2A9SX6U3WSK2II44J9T5VEYWCKGH5WV
+ERC721_CONTRACT_ADDRESS=YCT2A9SX6U3WSK2II44J9T5VEYWCKGH5WV
+```
