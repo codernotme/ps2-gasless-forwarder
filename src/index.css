@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes glitch {
+  0% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    transform: translate(2px, 2px);
+  }
+  80% {
+    transform: translate(2px, -2px);
+  }
+  100% {
+    transform: translate(0);
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-black text-white;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+  }
+}
+
+@layer components {
+  .neo-button {
+    @apply px-6 py-3 bg-white text-black border-4 border-black 
+           font-bold text-xl uppercase tracking-wider
+           transition-all duration-200
+           hover:bg-red-500 hover:text-white hover:translate-x-[-4px] 
+           hover:translate-y-[-4px] hover:shadow-[4px_4px_0_0_#000];
+  }
+
+  .neo-input {
+    @apply w-full px-4 py-3 bg-white text-black border-4 border-black 
+           font-bold text-lg
+           focus:outline-none focus:ring-4 focus:ring-red-500
+           placeholder:text-gray-400;
+  }
+
+  .glitch-hover:hover {
+    animation: glitch 0.3s infinite;
+  }
+
+  .neo-card {
+    @apply bg-white text-black border-4 border-black p-6
+           hover:translate-x-[-8px] hover:translate-y-[-8px]
+           hover:shadow-[8px_8px_0_0_#000]
+           transition-all duration-200;
+  }
+
+  /* New Neo-Brutalist Styles */
+  .neo-status {
+    @apply inline-flex items-center px-4 py-2 text-sm font-bold
+           border-2 border-black uppercase;
+  }
+
+  .neo-status-pending {
+    @apply bg-yellow-300 animate-pulse;
+  }
+
+  .neo-status-success {
+    @apply bg-green-400;
+  }
+
+  .neo-status-error {
+    @apply bg-red-500 text-white;
+  }
+
+  .neo-grid {
+    @apply grid gap-4 p-4 border-4 border-black bg-white;
+  }
+
+  .neo-toast {
+    @apply fixed bottom-4 right-4 p-4 bg-white border-4 border-black
+           shadow-[8px_8px_0_0_#000] animate-bounce;
+  }
+
+  .neo-progress {
+    @apply h-4 bg-white border-4 border-black overflow-hidden;
+  }
+
+  .neo-progress-bar {
+    @apply h-full bg-red-500 transition-all duration-300;
+  }
+
+  .neo-table {
+    @apply w-full border-4 border-black bg-white;
+  }
+
+  .neo-table th {
+    @apply px-4 py-2 bg-black text-white font-bold uppercase text-left;
+  }
+
+  .neo-table td {
+    @apply px-4 py-2 border-b-2 border-black;
+  }
+
+  .neo-table tr:hover {
+    @apply bg-red-100 cursor-pointer;
+  }
+}
