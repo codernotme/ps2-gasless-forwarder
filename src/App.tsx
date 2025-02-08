@@ -74,7 +74,7 @@ function App() {
       {/* Footer */}
       <footer className="mt-12 border-t-4 border-white pt-6">
         <p className="text-center font-bold">
-          RAWGAS © 2024 | The Neo-Brutalist Gasless Transaction Platform
+          RAWGAS © 2025 | The Neo-Brutalist Gasless Transaction Platform
         </p>
       </footer>
     </div>
