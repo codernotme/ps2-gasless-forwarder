@@ -1,35 +1,52 @@
 # RAWGAS - Neo-Brutalist Web3 Gasless Transaction Platform
 
-RAWGAS is a cutting-edge Web3 platform that enables gasless token transfers through a secure forwarder smart contract, wrapped in an aggressive Neo-Brutalist interface.
-
 ![RAWGAS Platform](https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&q=80&w=2232&ixlib=rb-4.0.3)
+
+RAWGAS is a cutting-edge Web3 platform that enables gasless token transfers through a secure forwarder smart contract, wrapped in an aggressive Neo-Brutalist interface. Built with modern technologies and designed for seamless user experience.
 
 ## 🚀 Features
 
+### Core Functionality
 - **Gasless Transactions**: Execute token transfers without paying gas fees
-- **Multi-Token Support**: Support for ERC-20 tokens
-- **Secure Forwarding**: EIP-2771 compliant meta-transactions
-- **Neo-Brutalist UI**: Aggressive, modern interface design
+- **Multi-Token Support**: Support for both ERC-20 and ERC-721 tokens
+- **Batch Operations**: Execute multiple transfers in a single transaction
+- **Real-time Price Tracking**: Live ETH price charts and token conversion
+- **Transaction History**: Complete log of all user operations
+- **MetaMask Integration**: Seamless wallet connection and authentication
+
+### User Experience
+- **Neo-Brutalist Design**: Bold, modern interface with high usability
 - **Real-time Updates**: Live transaction tracking and balance updates
+- **Token Converters**: Easy conversion between tokens and fiat
+- **NFT Metadata Viewer**: View and verify NFT information
+- **Mobile Responsive**: Fully functional on all device sizes
 
 ## 🛠 Technical Stack
 
-- **Frontend**: React + Vite + TypeScript
+### Frontend
+- **Framework**: React + Vite + TypeScript
 - **Styling**: TailwindCSS + Framer Motion
-- **Web3**: Viem + Ethers.js
 - **State Management**: Zustand + TanStack Query
-- **Smart Contracts**: Solidity + OpenZeppelin
+- **Form Handling**: React Hook Form + Zod
+
+### Blockchain
+- **Web3 Integration**: Viem + Ethers.js
+- **Contract Standards**: OpenZeppelin
+- **Network Support**: Ethereum Mainnet + Testnets
+
+### Backend & Database
+- **Database**: Supabase
+- **Authentication**: MetaMask + Supabase Auth
+- **API Integration**: CoinGecko + OpenSea
 
 ## 📦 Prerequisites
 
 - Node.js 20.x or later
-- Docker and Docker Compose (optional)
 - MetaMask or compatible Web3 wallet
 - Git
+- Supabase account
 
 ## 🔧 Installation
-
-### Using Node.js
 
 1. Clone the repository:
    \`\`\`bash
@@ -45,62 +62,106 @@ RAWGAS is a cutting-edge Web3 platform that enables gasless token transfers thro
 3. Set up environment variables:
    \`\`\`bash
    cp .env.example .env
-   # Edit .env with your values
    \`\`\`
+
+   Configure the following variables:
+   - \`VITE_CHAIN_ID\`: Ethereum network chain ID
+   - \`VITE_RPC_URL\`: Your Ethereum RPC endpoint
+   - \`VITE_FORWARDER_ADDRESS\`: Deployed forwarder contract address
+   - \`VITE_SUPABASE_URL\`: Your Supabase project URL
+   - \`VITE_SUPABASE_ANON_KEY\`: Your Supabase anon/public key
 
 4. Start development server:
    \`\`\`bash
    npm run dev
    \`\`\`
 
-### Using Docker
+## 🗄️ Database Setup
 
-1. Build and run with Docker Compose:
-   \`\`\`bash
-   docker-compose up -d
-   \`\`\`
+### Supabase Configuration
 
-2. Access the application at \`http://localhost:3000\`
+1. Create a new Supabase project
+2. Set up the following tables:
 
-## 🔐 Smart Contract Deployment
+#### Users Table
+\`\`\`sql
+create table public.users (
+  id uuid references auth.users primary key,
+  wallet_address text unique not null,
+  created_at timestamptz default now(),
+  last_login timestamptz
+);
 
-1. Set up environment variables:
-   - \`DEPLOYER_PRIVATE_KEY\`: Your deployment wallet's private key
-   - \`VITE_RPC_URL\`: Your Ethereum RPC URL
+-- Enable RLS
+alter table public.users enable row level security;
 
-2. Deploy the contract:
-   \`\`\`bash
-   npm run deploy
-   \`\`\`
+-- Access policies
+create policy "Users can read own data"
+  on public.users for select
+  using (auth.uid() = id);
+\`\`\`
 
-3. Update the \`.env\` file with the deployed contract address
+#### Transactions Table
+\`\`\`sql
+create table public.transactions (
+  id uuid primary key default gen_random_uuid(),
+  user_address text references public.users(wallet_address),
+  transaction_hash text not null,
+  type text check (type in ('ERC20', 'ERC721', 'BATCH')),
+  status text check (status in ('pending', 'success', 'failed')),
+  created_at timestamptz default now()
+);
+
+-- Enable RLS
+alter table public.transactions enable row level security;
+
+-- Access policies
+create policy "Users can read own transactions"
+  on public.transactions for select
+  using (auth.uid() in (
+    select id from public.users where wallet_address = user_address
+  ));
+\`\`\`
 
 ## 🔒 Security Features
 
-1. **Signature Verification**
-   - EIP-712 compliant signatures
-   - Nonce management for replay protection
-   - Deadline-based transaction expiration
-
-2. **Smart Contract Security**
+1. **Smart Contract Security**
    - OpenZeppelin security standards
    - Comprehensive access controls
-   - Event emission for all critical operations
+   - Emergency pause functionality
+   - Gas price limits
 
-3. **Frontend Security**
+2. **Frontend Security**
    - Secure wallet connections
    - Transaction signing validation
+   - Rate limiting
    - Error boundary protection
 
-## 🌐 Environment Variables
+3. **Database Security**
+   - Row Level Security (RLS)
+   - Secure authentication flow
+   - Data encryption
+   - Access policies
 
-| Variable | Description | Required | Default |
-|----------|-------------|----------|---------|
-| VITE_CHAIN_ID | Ethereum network chain ID | Yes | 1 |
-| VITE_RPC_URL | Ethereum RPC endpoint | Yes | - |
-| VITE_FORWARDER_ADDRESS | Deployed forwarder contract address | Yes | - |
-| DEPLOYER_PRIVATE_KEY | Private key for contract deployment | For deployment | - |
-| VITE_ENABLE_TESTNETS | Enable testnet support | No | false |
+## 📊 Monitoring & Analytics
+
+- Transaction success rates
+- Gas usage metrics
+- User activity tracking
+- Error reporting
+- Performance monitoring
+
+## 🚀 Deployment
+
+1. Build the application:
+   \`\`\`bash
+   npm run build
+   \`\`\`
+
+2. Deploy to your hosting service:
+   - Upload the \`dist\` folder
+   - Configure environment variables
+   - Set up SSL certificates
 
 ## 🧪 Testing
 
@@ -122,34 +183,9 @@ npm run test
    - Pull request reviews
 
 3. **Testing Requirements**
-   - Unit tests for all components
+   - Unit tests for components
    - Integration tests for Web3 features
    - Contract test coverage > 95%
-
-## 🚀 Deployment
-
-1. **Build the application**:
-   \`\`\`bash
-   npm run build
-   \`\`\`
-
-2. **Using Docker**:
-   \`\`\`bash
-   docker build -t rawgas .
-   docker run -p 3000:3000 rawgas
-   \`\`\`
-
-3. **Traditional Deployment**:
-   - Deploy the \`dist\` folder to your hosting service
-   - Configure environment variables
-   - Set up SSL certificates
-
-## 🔍 Monitoring
-
-- Transaction status tracking
-- Gas usage analytics
-- Error reporting
-- Performance metrics
 
 ## 🤝 Contributing
 
@@ -167,4 +203,12 @@ MIT License - see LICENSE.md for details
 
 - OpenZeppelin for security standards
 - Ethereum community for EIP-2771
+- Supabase team for backend infrastructure
 - Neo-Brutalist design inspiration
+
+## 📞 Support
+
+For support, please:
+1. Check the [Issues](https://github.com/yourusername/rawgas/issues) page
+2. Join our [Discord community](https://discord.gg/rawgas)
+3. Email support at support@rawgas.io
